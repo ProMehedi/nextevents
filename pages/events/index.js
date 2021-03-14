@@ -1,9 +1,17 @@
+import { useRouter } from 'next/router'
 import EventList from '../../components/events/EventList'
 import EventSearch from '../../components/events/EventSearch'
 import { getAllEvents } from '../../dummy-data'
 
 const EventsPage = () => {
   const events = getAllEvents()
+
+  const router = useRouter()
+
+  const findEventHandler = (year, month) => {
+    const fullPath = `/events/${year}/${month}`
+    router.push(fullPath)
+  }
 
   if (!events) {
     return (
@@ -19,7 +27,7 @@ const EventsPage = () => {
 
   return (
     <>
-      <EventSearch />
+      <EventSearch onSearch={findEventHandler} />
       <EventList events={events} />
     </>
   )
