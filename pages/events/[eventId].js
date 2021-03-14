@@ -1,5 +1,5 @@
 import EventDetails from '../../components/events/EventDetails'
-import { getEventById, getEvents } from '../../helper/ApiUtils'
+import { getEventById, getFeaturedEvent } from '../../helper/ApiUtils'
 
 const SingleEventsPage = ({ event }) => {
   if (!event) {
@@ -42,13 +42,13 @@ export const getStaticProps = async (ctx) => {
 }
 
 export const getStaticPaths = async () => {
-  const events = await getEvents()
+  const events = await getFeaturedEvent()
 
   const paths = events.map((event) => ({ params: { eventId: event.id } }))
 
   return {
     paths,
-    fallback: false,
+    fallback: 'blocking',
   }
 }
 
