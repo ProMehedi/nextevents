@@ -1,12 +1,7 @@
-import { useRouter } from 'next/router'
 import EventDetails from '../../components/events/EventDetails'
-import { getEventById } from '../../dummy-data'
+import { getEventById, getEvents } from '../../helper/ApiUtils'
 
-const SingleEventsPage = () => {
-  const router = useRouter()
-  const { eventId } = router.query
-  const event = getEventById(eventId)
-
+const SingleEventsPage = ({ event }) => {
   if (!event) {
     return (
       <center>
@@ -32,6 +27,28 @@ const SingleEventsPage = () => {
       />
     </div>
   )
+}
+
+export const getStaticProps = async (ctx) => {
+  const { eventId } = ctx.params
+  const event = await getEventById(eventId)
+
+  return {
+    props: {
+      event,
+    },
+  }
+}
+
+export const getStaticPaths = async () => {
+  const events = await getEvents()
+
+  const paths = events.map((event) => ({ params: { eventId: event.id } }))
+
+  return {
+    paths,
+    fallback: false,
+  }
 }
 
 export default SingleEventsPage
