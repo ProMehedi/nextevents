@@ -37,6 +37,7 @@ export const getStaticProps = async (ctx) => {
     props: {
       event,
     },
+    revalidate: 10,
   }
 }
 
