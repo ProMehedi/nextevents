@@ -6,7 +6,7 @@ const SingleEventsPage = () => {
   const router = useRouter()
   const { eventId } = router.query
   const event = getEventById(eventId)
-  const { id, title, date, description, image, isFeatured, location } = event
+  const { title, date, description, image, location } = event
 
   console.log(event)
 
