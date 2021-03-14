@@ -2,15 +2,7 @@ import styles from '../../styles/EventDetails.module.css'
 import AddressIcon from '../icons/AddressIcon'
 import DateIcon from '../icons/DateIcon'
 
-const EventDetails = ({
-  id,
-  title,
-  date,
-  desc,
-  image,
-  isFeatured,
-  location,
-}) => {
+const EventDetails = ({ title, date, desc, image, location }) => {
   const readableDate = new Date(date).toLocaleDateString('en-us', {
     day: 'numeric',
     month: 'long',
