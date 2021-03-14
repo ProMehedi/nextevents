@@ -9,7 +9,7 @@ const EventList = ({ events }) => {
           key={event.id}
           id={event.id}
           title={event.title}
-          image={event.image}
+          image={`/${event.image}`}
           date={event.date}
           location={event.location}
         />
