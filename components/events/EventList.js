@@ -4,7 +4,14 @@ const EventList = ({ events }) => {
   return (
     <ul>
       {events.map((event) => (
-        <EventItem key={event.id} event={event} />
+        <EventItem
+          key={event.id}
+          id={event.id}
+          title={event.title}
+          image={event.image}
+          date={event.date}
+          location={event.location}
+        />
       ))}
     </ul>
   )
