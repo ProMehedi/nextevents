@@ -6,9 +6,16 @@ const SingleEventsPage = () => {
   const router = useRouter()
   const { eventId } = router.query
   const event = getEventById(eventId)
-  const { title, date, description, image, location } = event
 
-  console.log(event)
+  if (!event) {
+    return (
+      <center>
+        <h1>Loading...</h1>
+      </center>
+    )
+  }
+
+  const { id, title, date, description, image, isFeatured, location } = event
 
   if (!event) {
     return <h1>No Event Found!</h1>
