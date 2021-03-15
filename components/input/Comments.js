@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import CommentList from './CommentList'
 import NewComment from './NewComment'
 import styles from './Comments.module.css'
 import ErrorAlert from '../ui/ErrorAlert'
+import NotificationContext from '../../store/NotificationContext'
 
 const Comments = ({ eventId }) => {
-  const [message, setMessage] = useState()
+  const notificationCtx = useContext(NotificationContext)
+
   const [comments, setComments] = useState()
   const [showComments, setShowComments] = useState(false)
 
@@ -14,24 +16,44 @@ const Comments = ({ eventId }) => {
     const reqData = await fetch(`/api/comments/${eventId}`)
     const resData = await reqData.json()
     setComments(resData.comments)
-  }, [showComments])
+  }, [comments, showComments])
 
   const toggleCommentsHandler = async () => {
     setShowComments((prevStatus) => !prevStatus)
   }
 
   const addCommentHandler = async (commentData) => {
-    const reqData = await fetch(`/api/comments/${eventId}`, {
-      method: 'POST',
-      body: JSON.stringify(commentData),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    notificationCtx.showNotification({
+      title: 'Signing up...',
+      message: 'Regitering for the newsletter...',
+      status: 'pending',
     })
 
-    const resData = await reqData.json()
-    console.log(resData)
-    setMessage(resData.message)
+    try {
+      const reqData = await fetch(`/api/comments/${eventId}`, {
+        method: 'POST',
+        body: JSON.stringify(commentData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const resData = await reqData.json()
+      notificationCtx.showNotification({
+        title: 'Added!',
+        message: 'Successfully added the comment',
+        status: 'success',
+      })
+    } catch (error) {
+      notificationCtx.showNotification({
+        title: 'Comment Error!',
+        message: error.message ? error.message : 'Failed to add the comment',
+        status: 'error',
+      })
+      throw new Error(
+        error.message ? error.message : 'Failed to submit the comment'
+      )
+    }
   }
 
   return (
@@ -40,7 +62,6 @@ const Comments = ({ eventId }) => {
         {showComments ? 'Hide' : 'Show'} Comments
       </button>
       {showComments && <NewComment onAddComment={addCommentHandler} />}
-      {message && <ErrorAlert>{message}</ErrorAlert>}
       {showComments && <CommentList items={comments} />}
     </section>
   )

@@ -1,24 +1,50 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import NotificationContext from '../../store/NotificationContext'
 import ErrorAlert from '../ui/ErrorAlert'
 import styles from './NewsletterRegistration.module.css'
 
 const NewsletterRegistration = () => {
+  const notificationCtx = useContext(NotificationContext)
+
   const [email, setEmail] = useState('')
-  const [message, setMessage] = useState()
+
   const registrationHandler = async (event) => {
     event.preventDefault()
 
-    setMessage(null)
-
-    const reqData = await fetch('/api/newsletter', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
+    notificationCtx.showNotification({
+      title: 'Signing up...',
+      message: 'Regitering for the newsletter...',
+      status: 'pending',
     })
 
-    const resData = await reqData.json()
-    setEmail('')
-    setMessage(resData.message)
+    try {
+      const reqData = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      const resData = await reqData.json()
+      setEmail('')
+      notificationCtx.showNotification({
+        title: 'Signed Up',
+        message: 'Successfully registered for the newsletter',
+        status: 'success',
+      })
+    } catch (error) {
+      notificationCtx.showNotification({
+        title: 'Signup Error!',
+        message: error.message
+          ? error.message
+          : 'Failed to registered for the newsletter',
+        status: 'error',
+      })
+      throw new Error(
+        error.message
+          ? error.message
+          : 'Failed to registered for the newsletter'
+      )
+    }
   }
 
   return (
@@ -37,19 +63,6 @@ const NewsletterRegistration = () => {
           <button>Register</button>
         </div>
       </form>
-      {message && (
-        <>
-          <ErrorAlert>
-            <span className='newsLetterAlert'>{message}</span>
-          </ErrorAlert>
-          <style jsx>{`
-            .newsLetterAlert {
-              font-size: 0.8rem;
-              display: block;
-            }
-          `}</style>
-        </>
-      )}
     </section>
   )
 }

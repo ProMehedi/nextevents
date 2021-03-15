@@ -1,5 +1,20 @@
-export default (req, res) => {
+import {
+  connectDatabase,
+  getAllDocuments,
+  insertDocument,
+} from '../../../helper/DbUtils'
+
+export default async (req, res) => {
   const eventId = req.query.eventId
+
+  let client
+  try {
+    client = await connectDatabase()
+  } catch (error) {
+    res.status(500).json({ message: 'Connecting to the database failed!' })
+    return
+  }
+
   if (req.method === 'POST') {
     const { email, name, comment } = req.body
     if (
@@ -16,34 +31,28 @@ export default (req, res) => {
       })
       return
     } else {
-      res.status(201).json({
-        message: 'Comment successfuly added!',
-        comment: { id: Date.now().toString(), email, name, comment },
-      })
-    }
-  } else if (req.method === 'GET') {
-    const dummyComments = [
-      {
-        id: 'c1',
-        email: 'test@example.com',
-        name: 'Mehedi Hasan',
-        comment: 'This is comment 1',
-      },
-      {
-        id: 'c2',
-        email: 'test@example.com',
-        name: 'Mehedi Hasan',
-        comment: 'This is comment 2',
-      },
-      {
-        id: 'c3',
-        email: 'test@example.com',
-        name: 'Mehedi Hasan',
-        comment: 'This is comment 3',
-      },
-    ]
+      const newComment = { eventId, email, name, comment }
 
-    res.status(200).json({ comments: dummyComments })
-  } else {
+      let result
+
+      try {
+        result = await insertDocument(client, 'comments', newComment)
+        newComment._id = result.insertedId
+        res.status(201).json({ message: 'Added comment.', comment: newComment })
+      } catch (error) {
+        res.status(500).json({ message: 'Inserting comment failed!' })
+      }
+    }
   }
+
+  if (req.method === 'GET') {
+    try {
+      const documents = await getAllDocuments(client, 'comments', { _id: -1 })
+      res.status(200).json({ comments: documents })
+    } catch (error) {
+      res.status(500).json({ message: error.message })
+    }
+  }
+
+  client.close()
 }

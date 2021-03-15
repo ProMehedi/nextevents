@@ -7,11 +7,11 @@ const CommentList = ({ items }) => {
   return (
     <ul className={styles.comments}>
       {items.map((item) => (
-        <li key={item.id}>
+        <li key={item._id}>
           <span>{item.comment}</span>
           <div>
             By
-            <address>{item.name}</address>
+            <address> {item.name}</address>
           </div>
         </li>
       ))}
