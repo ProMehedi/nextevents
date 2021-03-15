@@ -30,22 +30,16 @@ export default (req, res) => {
         comment: 'This is comment 1',
       },
       {
-        message: 'Comment successfuly added!',
-        comment: {
-          id: 'c2',
-          email: 'test@example.com',
-          name: 'Mehedi Hasan',
-          comment: 'This is comment 2',
-        },
+        id: 'c2',
+        email: 'test@example.com',
+        name: 'Mehedi Hasan',
+        comment: 'This is comment 2',
       },
       {
-        message: 'Comment successfuly added!',
-        comment: {
-          id: 'c3',
-          email: 'test@example.com',
-          name: 'Mehedi Hasan',
-          comment: 'This is comment 3',
-        },
+        id: 'c3',
+        email: 'test@example.com',
+        name: 'Mehedi Hasan',
+        comment: 'This is comment 3',
       },
     ]
 

@@ -26,7 +26,7 @@ const SingleEventsPage = ({ event }) => {
         location={location}
         date={date}
       />
-      <Comments />
+      <Comments eventId={id} />
     </>
   )
 }

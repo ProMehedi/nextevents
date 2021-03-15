@@ -1,21 +1,20 @@
 import styles from './CommentList.module.css'
 
-const CommentList = () => {
+const CommentList = ({ items }) => {
+  if (!items) {
+    return <h1>Loading...</h1>
+  }
   return (
     <ul className={styles.comments}>
-      {/* Render list of comments - fetched from API */}
-      <li>
-        <p>My comment is amazing!</p>
-        <div>
-          By <address>Maximilian</address>
-        </div>
-      </li>
-      <li>
-        <p>My comment is amazing!</p>
-        <div>
-          By <address>Maximilian</address>
-        </div>
-      </li>
+      {items.map((item) => (
+        <li key={item.id}>
+          <span>{item.comment}</span>
+          <div>
+            By
+            <address>{item.name}</address>
+          </div>
+        </li>
+      ))}
     </ul>
   )
 }

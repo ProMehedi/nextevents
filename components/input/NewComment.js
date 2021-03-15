@@ -1,55 +1,63 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import styles from './NewComment.module.css'
 
-const NewComment = (props) => {
+const NewComment = ({ onAddComment }) => {
   const [isInvalid, setIsInvalid] = useState(false)
-
-  const emailInputRef = useRef()
-  const nameInputRef = useRef()
-  const commentInputRef = useRef()
+  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
+  const [comment, setComment] = useState('')
 
   const sendCommentHandler = (event) => {
     event.preventDefault()
-
-    const enteredEmail = emailInputRef.current.value
-    const enteredName = nameInputRef.current.value
-    const enteredComment = commentInputRef.current.value
-
     if (
-      !enteredEmail ||
-      enteredEmail.trim() === '' ||
-      !enteredEmail.includes('@') ||
-      !enteredName ||
-      enteredName.trim() === '' ||
-      !enteredComment ||
-      enteredComment.trim() === ''
+      !email ||
+      email.trim() === '' ||
+      !email.includes('@') ||
+      !name ||
+      name.trim() === '' ||
+      !comment ||
+      comment.trim() === ''
     ) {
       setIsInvalid(true)
       return
     }
-
-    props.onAddComment({
-      email: enteredEmail,
-      name: enteredName,
-      text: enteredComment,
-    })
+    onAddComment({ email, name, comment })
+    setEmail('')
+    setName('')
+    setComment('')
+    setIsInvalid(false)
   }
 
   return (
-    <form className={styles.form}>
+    <form className={styles.form} onSubmit={sendCommentHandler}>
       <div className={styles.row}>
         <div className={styles.control}>
           <label htmlFor='email'>Your email</label>
-          <input type='email' id='email' ref={emailInputRef} />
+          <input
+            type='email'
+            id='email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div className={styles.control}>
           <label htmlFor='name'>Your name</label>
-          <input type='text' id='name' ref={nameInputRef} />
+          <input
+            type='text'
+            id='name'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
       </div>
       <div className={styles.control}>
         <label htmlFor='comment'>Your comment</label>
-        <textarea id='comment' rows='5' ref={commentInputRef}></textarea>
+        <textarea
+          id='comment'
+          rows='5'
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        ></textarea>
       </div>
       {isInvalid && <p>Please enter a valid email address and comment!</p>}
       <button>Submit</button>
