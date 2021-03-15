@@ -16,7 +16,7 @@ const EventItem = ({ id, title, image, date, location }) => {
 
   return (
     <li className={styles.item}>
-      <Image src={image} alt={title} width='260' height='130' />
+      <Image src={image} alt={title} width={260} height={130} />
       <div className={styles.content}>
         <div>
           <h2>{title}</h2>

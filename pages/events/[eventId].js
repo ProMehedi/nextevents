@@ -1,4 +1,5 @@
 import EventDetails from '../../components/events/EventDetails'
+import Comments from '../../components/input/comments'
 import { getEventById, getFeaturedEvent } from '../../helper/ApiUtils'
 
 const SingleEventsPage = ({ event }) => {
@@ -17,7 +18,7 @@ const SingleEventsPage = ({ event }) => {
   }
 
   return (
-    <div>
+    <>
       <EventDetails
         title={title}
         desc={description}
@@ -25,7 +26,8 @@ const SingleEventsPage = ({ event }) => {
         location={location}
         date={date}
       />
-    </div>
+      <Comments />
+    </>
   )
 }
 
