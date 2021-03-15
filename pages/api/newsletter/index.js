@@ -1,16 +1,33 @@
-export default (req, res) => {
+import { connectDatabase, insertDocument } from '../../../helper/DbUtils'
+
+async function handler(req, res) {
   if (req.method === 'POST') {
-    const { email } = req.body
-    if (!email || !email.includes('@')) {
-      res
-        .status(422)
-        .json({ message: 'Failed to Signup Newsletter, Invalid Email address' })
-    } else {
-      res
-        .status(201)
-        .json({ message: 'Newsletter Signup Successfully!', email })
+    const userEmail = req.body.email
+
+    if (!userEmail || !userEmail.includes('@')) {
+      res.status(422).json({ message: 'Invalid email address.' })
+      return
     }
-  } else {
-    res.status(200).json({ message: 'API is running' })
+
+    let client
+
+    try {
+      client = await connectDatabase()
+    } catch (error) {
+      res.status(500).json({ message: 'Connecting to the database failed!' })
+      return
+    }
+
+    try {
+      await insertDocument(client, 'newsletter', { email: userEmail })
+      client.close()
+    } catch (error) {
+      res.status(500).json({ message: 'Inserting data failed!' })
+      return
+    }
+
+    res.status(201).json({ message: 'Signed up!' })
   }
 }
+
+export default handler
